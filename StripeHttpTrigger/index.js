@@ -2,17 +2,22 @@ module.exports = async function (context, req) {
     // Using Express
 const express = require('express');
 const app = express();
+const stripe = require('stripe')('sk_test_308o9TyRPYOeaQqSI3GIwmDA');
 app.use(express.json());
 
+    // STEP 1 - Create a PaymentIntent on the server
+    (async () => {
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: 100,
+        currency: 'usd',
+    });
+    })();
 
-const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
-
-(async () => {
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 100,
-    currency: 'usd',
-  });
-})();
+    // Step 5: Asynchronously fulfill the customer’s order
+    (async () => {
+    const intent = await stripe.paymentIntents.retrieve('pi_Aabcxyz01aDfoo');
+    const charges = intent.charges.data;
+    })();
 
 
     if (req.query.name || (req.body && req.body.name)) {
