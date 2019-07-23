@@ -5,11 +5,19 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "applicationinsights": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "stripe": "^7.4.0"
   },
   "devDependencies": {},
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "description": ""
+  "keywords": [],
+  "description": "",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tao-ninja/stripedonate.git"
+  }
 }
