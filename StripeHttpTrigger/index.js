@@ -1,26 +1,21 @@
-console.log("here");
-module.exports = async function (context, req) {
-  const appInsights = require("applicationinsights");
-  appInsights.start();
-  const log = context.log;
-  
-  const express = require('express');
-  const app = express();
-  const stripe = require('stripe')(process.env.StripeSecret);
-  const subscription = req.body.subscription;
-  log('Payment Subscriptions is' + subscription);
-  app.use(express.json());
+const paysubHandler = require('./handlers/paysub.handler');
+const payonceHandler = require('./handlers/payonce.handler');
 
-  if(subscription == true){
-  let response = await ('./paysub');
-  log('Payment Once');
-  }else{
-  const payonce = require('./payonce');
-  log('Payment Subscriptions');
+module.exports = async (context, req, ...args) => {
+  const log = context.log;
+  const { subscription = null, totalamount = null } = req.body || {};
+
+  log('Req.body is', req.body);
+  log(`Req.body.totalamount is ${totalamount}`);
+  log(`Payment Subscriptions is ${subscription}`);
+
+  try {
+    // check a pay method
+    return (subscription && (await paysubHandler(context, req, ...args))) || (await payonceHandler(context, req, ...args));
+  } catch (e) {
+    return (context.res = {
+      status: 200,
+      body: { error: e.message },
+    });
   }
-  
-  log('Req.body', req.body);
-  log('Req.body.totalamount', req.body.totalamount);
-  
-	context.done();
 };
